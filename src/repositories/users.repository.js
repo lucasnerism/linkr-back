@@ -5,7 +5,12 @@ const getUserById = (id) => {
   SELECT
         u.name,u.profile_picture AS "image",
         JSON_AGG(
-        JSON_BUILD_OBJECT('id',p.id,'link',p.link,'description',p.description,'hashtags',JSON_AGG(h.name))
+        JSON_BUILD_OBJECT(
+          'id',p.id,
+          'link',p.link,
+          'description',p.description,
+          'hashtags',JSON_AGG(h.name),
+          'likes',(SELECT COUNT(id) FROM likes WHERE id_user=$1))
         ) AS "posts"
   FROM
       users u
