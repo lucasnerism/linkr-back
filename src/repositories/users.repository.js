@@ -3,35 +3,42 @@ import { db } from "../database/connect.js";
 const getUserById = (id) => {
   return db.query(`
   SELECT
-        u.name,u.profile_picture AS "image",
+        u.id,u.name,u.profile_picture AS "image",
         JSON_AGG(
-        JSON_BUILD_OBJECT(
-          'id',p.id,
-          'link',p.link,
-          'description',p.description,
-          'hashtags',JSON_AGG(h.name),
-          'likes',(SELECT COUNT(id) FROM likes WHERE id_user=$1))
-        ) AS "posts"
+          JSON_BUILD_OBJECT(
+            'id',p.id,
+            'link',p.link,
+            'description',p.description,
+            'hashtags',(COALESCE(h.hashtag,'[]')),
+            'likes',(SELECT COALESCE(COUNT(id),0) FROM likes WHERE post_id=p.id)
+          )
+        ) AS posts
   FROM
       users u
-  JOIN
+  INNER JOIN
       posts p ON p.user_id = u.id
-  JOIN
-      hashtags h On h.post_id = p.id
+  CROSS JOIN LATERAL(
+    SELECT JSON_AGG(h.name) AS hashtag
+    FROM hashtags h
+    WHERE post_id = p.id
+  ) h
   WHERE
       u.id=$1
-  `, [id]);
+  GROUP BY
+      u.id,u.name,u.profile_picture
+  ;`, [id]);
 };
 
-const getUsersBySearch = ({ name }) => {
+const getUsersBySearch = (name) => {
+  const pattern = `%${name}%`;
   return db.query(`
   SELECT
-        id,name,profile_picture AS "image"
+        u.id,u.name,u.profile_picture AS "image"
   FROM
-      users
+      users u
   WHERE
-      name LIKE $1
-  `, [name]);
+      u.name ILIKE $1
+  `, [pattern]);
 };
 
 export default {
