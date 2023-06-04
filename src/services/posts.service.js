@@ -32,8 +32,30 @@ const getPostsByHashtag = async (tag) => {
     return { status: 500, response: { message: error.message } };
   }
 };
+
+const editPostById = async (newComment, id) => {
+  try {
+    const result = await postsRepository.editPostById(newComment, id);
+    return { status: 200 };
+  } catch (error) {
+    return { status: 500, response: { message: error.message } };
+  }
+};
+
+const deletePostById = async (id) => {
+  try {
+    const result = await postsRepository.deletePostById(id);
+    return { status: 200 };
+  } catch (error) {
+    return { status: 500, response: { message: error.message } };
+  }
+};
+
+
 export default {
   createPost,
   getPosts,
-  getPostsByHashtag
+  getPostsByHashtag,
+  editPostById,
+  deletePostById
 };
