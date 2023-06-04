@@ -99,7 +99,7 @@ export default {
   getPosts,
   getPostsByHashtag,
   editPostById,
-  deletePostById
+  deletePostById,
   likePost,
   dislikePost,
   getTrendingHashtags
