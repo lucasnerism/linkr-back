@@ -49,6 +49,7 @@ const editPostById = async (newComment, id) => {
     return { status: 200 };
   } catch (error) {
     return { status: 500, response: { message: error.message } };
+  }
 };
 
 const likePost = async (user_id, post_id) => {
