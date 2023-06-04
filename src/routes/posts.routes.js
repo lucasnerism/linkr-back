@@ -13,4 +13,6 @@ postsRouter.get('/hashtag/:hashtag', validateToken, postsController.getPostsByHa
 postsRouter.post('/post/:id/like', validateToken, postsController.likePost);
 postsRouter.post('/post/:id/dislike', validateToken, postsController.dislikePost);
 
+
+
 export default postsRouter;
