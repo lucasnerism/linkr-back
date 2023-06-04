@@ -1,7 +1,8 @@
 import postsService from "../services/posts.service.js";
 
 const createPost = async (req, res) => {
-  const { status, response } = await postsService.createPost(req.body);
+  const user_id = res.locals.userId;
+  const { status, response } = await postsService.createPost({ ...req.body, user_id });
   res.status(status).json(response);
 };
 
@@ -30,6 +31,24 @@ const editPostById = async (req, res) => {
   res.status(status).json(response);
 };
 
+const likePost = async (req, res) => {
+  const { id: post_id } = req.params;
+  const { userId } = res.locals;
+  const { status, response } = await postsService.likePost(userId, post_id);
+  res.status(status).json(response);
+};
+
+const dislikePost = async (req, res) => {
+  const { id: post_id } = req.params;
+  const { userId } = res.locals;
+  const { status, response } = await postsService.dislikePost(userId, post_id);
+  res.status(status).json(response);
+};
+
+const getTrendingHashtags = async (req, res) => {
+  const { status, response } = await postsService.getTrendingHashtags();
+  res.status(status).json(response);
+};
 
 export default {
   createPost,
@@ -37,4 +56,7 @@ export default {
   getPostsByHashtag,
   editPostById,
   deletePostById
+  likePost,
+  dislikePost,
+  getTrendingHashtags
 };

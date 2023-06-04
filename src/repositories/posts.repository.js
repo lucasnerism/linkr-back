@@ -1,12 +1,13 @@
 import { db } from "../database/connect.js";
 
-const insertPost = ({ userId, link, comment, title, description, image }) => {
+const createPost = ({ user_id, link, comment, title, description, image }) => {
   return db.query(`
   INSERT INTO
     posts (user_id,link,comment,title,description,image)
   VALUES
     ($1,$2,$3,$4,$5,$6)
-  `, [userId, link, comment, title, description, image]);
+  RETURNING id;
+  `, [user_id, link, comment, title, description, image]);
 };
 
 const getPosts = () => {
@@ -37,6 +38,8 @@ const getPosts = () => {
     JOIN users u ON l.user_id = u.id
     WHERE post_id=p.id
   ) l
+  ORDER BY
+    id DESC
   ;`);
 };
 
@@ -69,14 +72,16 @@ const getPostsByHashtag = (tag) => {
     WHERE post_id=p.id
   ) l
   WHERE
-      p.id IN
-      (SELECT
-            post_id
-       FROM
-            hashtags h
-       WHERE
-            h.name ILIKE $1
-      )
+    p.id IN
+    (SELECT
+          post_id
+     FROM
+          hashtags h
+     WHERE
+          h.name ILIKE $1
+    )
+  ORDER BY
+    id DESC
   ;`, [tag]);
 };
 
@@ -93,7 +98,7 @@ const editPostById = (newComment, id) => {
 };
 
 export default {
-  insertPost,
+  createPost,
   getPosts,
   getPostsByHashtag,
   deletePostById,
