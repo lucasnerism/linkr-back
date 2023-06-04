@@ -42,16 +42,31 @@ const getPostsByHashtag = async (tag) => {
   }
 };
 
+
+const editPostById = async (newComment, id) => {
+  try {
+    const result = await postsRepository.editPostById(newComment, id);
+    return { status: 200 };
+
 const likePost = async (user_id, post_id) => {
   try {
     await likesRepository.likePost(user_id, post_id);
     const result = await likesRepository.getPostLikes(post_id);
     return { status: 200, response: result.rows[0] };
+    
   } catch (error) {
     return { status: 500, response: { message: error.message } };
   }
 };
 
+
+const deletePostById = async (id) => {
+  try {
+    const result = await postsRepository.deletePostById(id);
+    return { status: 200 };
+      } catch (error) {
+    return { status: 500, response: { message: error.message } };
+  }
 const dislikePost = async (user_id, post_id) => {
   try {
     await likesRepository.dislikePost(user_id, post_id);
@@ -62,6 +77,7 @@ const dislikePost = async (user_id, post_id) => {
   }
 };
 
+
 const getTrendingHashtags = async () => {
   try {
     const result = await hashtagsRepository.getTrendingHashtags();
@@ -71,10 +87,13 @@ const getTrendingHashtags = async () => {
   }
 };
 
+
 export default {
   createPost,
   getPosts,
   getPostsByHashtag,
+  editPostById,
+  deletePostById
   likePost,
   dislikePost,
   getTrendingHashtags

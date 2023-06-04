@@ -7,4 +7,5 @@ const usersRouter = Router();
 usersRouter.get('/user/:id', validateToken, usersController.getUserById);
 usersRouter.get('/user/', validateToken, usersController.searchUsers);
 
+
 export default usersRouter;
