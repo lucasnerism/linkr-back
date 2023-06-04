@@ -85,8 +85,22 @@ const getPostsByHashtag = (tag) => {
   ;`, [tag]);
 };
 
+const deletePostById = (id) => {
+  return db.query(
+    `DELETE FROM posts WHERE id=$1`, [id]
+  );
+};
+
+const editPostById = (newComment, id) => {
+  return db.query(
+    `UPDATE posts SET comment=$1, updated_at=NOW() WHERE id=$2`, [newComment, id]
+  );
+};
+
 export default {
   createPost,
   getPosts,
-  getPostsByHashtag
+  getPostsByHashtag,
+  deletePostById,
+  editPostById
 };

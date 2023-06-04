@@ -26,7 +26,6 @@ const getTest = async (req, res) => {
   }
 }
 
-
 export default {
   getUserById,
   searchUsers,
