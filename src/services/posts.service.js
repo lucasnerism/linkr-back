@@ -47,6 +47,9 @@ const editPostById = async (newComment, id) => {
   try {
     const result = await postsRepository.editPostById(newComment, id);
     return { status: 200 };
+  } catch (error) {
+    return { status: 500, response: { message: error.message } };
+};
 
 const likePost = async (user_id, post_id) => {
   try {
@@ -67,6 +70,8 @@ const deletePostById = async (id) => {
       } catch (error) {
     return { status: 500, response: { message: error.message } };
   }
+};
+  
 const dislikePost = async (user_id, post_id) => {
   try {
     await likesRepository.dislikePost(user_id, post_id);
