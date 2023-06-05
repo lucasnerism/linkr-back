@@ -90,7 +90,12 @@ CREATE TABLE public.posts (
     id integer NOT NULL,
     user_id integer NOT NULL,
     link text NOT NULL,
-    description text NOT NULL
+    description text,
+    title text,
+    comment text NOT NULL,
+    image text,
+    created_at timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
