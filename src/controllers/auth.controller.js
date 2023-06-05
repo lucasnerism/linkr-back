@@ -1,25 +1,26 @@
 import { db } from "../database/connect.js";
 import bcrypt from "bcrypt";
 import { v4 as uuid } from "uuid";
+import { deleteSessionDB } from "../repositories/auth.repository.js";
 
-export async function signUp (req, res){
-    const {email, password, username, profile_picture} = req.body;
+export async function signUp(req, res) {
+    const { email, password, username, profile_picture } = req.body;
 
     try {
         const checkEmail = await db.query(`SELECT * FROM users WHERE email = $1;`, [email]);
         if (checkEmail.rows.length > 0) return res.status(409).send('Email already exists!');
 
         const hashPassword = bcrypt.hashSync(password, 10);
-        await db.query(`INSERT INTO users (email, password, username, profile_picture) VALUES ($1, $2, $3, $4);`, [email, hashPassword, username, profile_picture]);
+        await db.query(`INSERT INTO users (email, password, name, profile_picture) VALUES ($1, $2, $3, $4);`, [email, hashPassword, username, profile_picture]);
         res.sendStatus(201);
 
-    }catch (err){
+    } catch (err) {
         res.status(500).send(err.message);
     }
 };
 
-export async function signIn (req, res){
-    const {email, password} = req.body;
+export async function signIn(req, res) {
+    const { email, password } = req.body;
 
     try {
         const checkUser = await db.query(`SELECT * FROM users WHERE email = $1;`, [email]);
@@ -31,9 +32,20 @@ export async function signIn (req, res){
 
         const token = uuid();
         await db.query(`INSERT INTO sessions (user_id, token) VALUES ($1, $2);`, [user.id, token]);
-        res.status(200).send({id: user.id, token: token});
+        res.status(200).send({ id: user.id, token: token, profile_picture: profile_picture });
 
-    }catch (err){
+    } catch (err) {
         res.status(500).send(err.message);
     }
 };
+
+export async function signOut(req, res) {
+    const { token } = res.locals;
+    try {
+        await deleteSessionDB(token);
+        res.status(204).send({message: "Usuário deslogado"});
+    } catch (error) {
+        res.status(500).send(err.message);
+    }
+}
+
