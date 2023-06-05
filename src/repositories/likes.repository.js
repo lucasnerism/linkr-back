@@ -33,8 +33,18 @@ const dislikePost = (user_id, post_id) => {
   `, [user_id, post_id]);
 };
 
+const deleteLikes = (post_id) => {
+  return db.query(`
+    DELETE FROM
+      likes
+    WHERE
+      post_id=$1
+  `, [post_id]);
+};
+
 export default {
   getPostLikes,
   likePost,
-  dislikePost
+  dislikePost,
+  deleteLikes
 };
