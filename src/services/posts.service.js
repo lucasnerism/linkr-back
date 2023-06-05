@@ -57,7 +57,7 @@ const likePost = async (user_id, post_id) => {
     await likesRepository.likePost(user_id, post_id);
     const result = await likesRepository.getPostLikes(post_id);
     return { status: 200, response: result.rows[0] };
-    
+
   } catch (error) {
     return { status: 500, response: { message: error.message } };
   }
@@ -66,13 +66,16 @@ const likePost = async (user_id, post_id) => {
 
 const deletePostById = async (id) => {
   try {
-    const result = await postsRepository.deletePostById(id);
+    const result = await postsRepository.getPostById(id);
+    if (result.rowCount === 0) return { status: 404, response: { message: "Post não encontrado" } };
+    await likesRepository.deleteLikes(id);
+    await postsRepository.deletePostById(id);
     return { status: 200 };
-      } catch (error) {
+  } catch (error) {
     return { status: 500, response: { message: error.message } };
   }
 };
-  
+
 const dislikePost = async (user_id, post_id) => {
   try {
     await likesRepository.dislikePost(user_id, post_id);
