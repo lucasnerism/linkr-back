@@ -1,4 +1,3 @@
-import { db } from "../database/connect.js";
 import usersService from "../services/users.service.js";
 
 const getUserById = async (req, res) => {
@@ -9,7 +8,8 @@ const getUserById = async (req, res) => {
 
 const searchUsers = async (req, res) => {
   const { name } = req.query;
-  const { status, response } = await usersService.searchUsers(name);
+  const { userId } = res.locals;
+  const { status, response } = await usersService.searchUsers(name, userId);
   res.status(status).json(response);
 };
 

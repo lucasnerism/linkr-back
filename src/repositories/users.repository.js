@@ -39,16 +39,18 @@ const getUserById = (id) => {
   ;`, [id]);
 };
 
-const getUsersBySearch = (name) => {
+const getUsersBySearch = (name, id) => {
   const pattern = `%${name}%`;
   return db.query(`
   SELECT
-        u.id,u.name,u.profile_picture AS "image"
+    u.id,u.name,u.profile_picture AS "image", EXISTS(SELECT * FROM follows WHERE follower_id = $2 and following_id = u.id) AS following
   FROM
-      users u
+    users u
   WHERE
-      u.name ILIKE $1
-  `, [pattern]);
+    u.name ILIKE $1
+  ORDER BY
+    following DESC;
+  `, [pattern, id]);
 };
 
 export default {

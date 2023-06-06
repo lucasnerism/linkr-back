@@ -109,13 +109,13 @@ const getPostsByHashtag = (tag) => {
   ) l
   WHERE
     p.id IN
-    (SELECT
-          post_id
-     FROM
-          hashtags h
-     WHERE
-          h.name ILIKE $1
-    )
+      (SELECT
+        post_id
+       FROM
+        hashtags h
+       WHERE
+        h.name ILIKE $1
+      )
   ORDER BY
     id DESC
   LIMIT 20

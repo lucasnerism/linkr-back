@@ -11,9 +11,9 @@ const getUserById = async (id) => {
   }
 };
 
-const searchUsers = async (name) => {
+const searchUsers = async (name, id) => {
   try {
-    const result = await usersRepository.getUsersBySearch(name);
+    const result = await usersRepository.getUsersBySearch(name, id);
     return { status: 200, response: result.rows };
   } catch (error) {
     return { status: 500, response: { message: error.message } };
