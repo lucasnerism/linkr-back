@@ -6,8 +6,8 @@ const usersRouter = Router();
 
 usersRouter.get('/user/:id', validateToken, usersController.getUserById);
 usersRouter.get('/user/', validateToken, usersController.searchUsers);
-usersRouter.get('/user/follow/:id', validateToken, usersController.getFollow)
-// usersRouter.post('/user/follow/:id', validateToken, usersController.createFollow)
+usersRouter.post('/user/follow/:id', validateToken, usersController.createFollow)
+usersRouter.delete('/user/follow/:id', validateToken, usersController.deleteFollow)
 
 usersRouter.get('/teste', usersController.getTest)
 

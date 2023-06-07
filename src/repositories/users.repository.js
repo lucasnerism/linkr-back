@@ -97,22 +97,6 @@ const getUsersBySearch = (name, id) => {
   `, [pattern, id]);
 };
 
-const getFollow = (body) => {
-  return db.query(`
-  SELECT
-        follower.name, following.name
-  FROM
-      follows
-  JOIN users AS follower ON follower.id=following_id
-  JOIN users AS following ON following.id=follower_id
-  WHERE 
-    follows.follower_id=$1 
-    AND
-    follows.following_id=$2
-  
-  `, [body.follower_id, body.following_id]);
-};
-
 const createFollow = (body) => {
   return db.query(`
     INSERT INTO 
@@ -123,9 +107,18 @@ const createFollow = (body) => {
     `, [body.following_id, body.follower_id]);
 };
 
+const deleteFollow = (body) => {
+  return db.query(`
+    DELETE FROM
+      follows 
+    WHERE 
+      following_id=$1 AND follower_id=$2   
+    `, [body.following_id, body.follower_id])
+}
+
 export default {
   getUserById,
   getUsersBySearch,
-  getFollow,
+  deleteFollow,
   createFollow
 };
