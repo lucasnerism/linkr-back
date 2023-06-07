@@ -7,7 +7,8 @@ const createPost = async (req, res) => {
 };
 
 const getPosts = async (req, res) => {
-  const { status, response } = await postsService.getPosts();
+  const { userId } = res.locals;
+  const { status, response } = await postsService.getPosts(userId);
   res.status(status).json(response);
 };
 
@@ -26,7 +27,7 @@ const deletePostById = async (req, res) => {
 
 const editPostById = async (req, res) => {
   const { id } = req.params;
-  const {newComment} = req.body;
+  const { newComment } = req.body;
   const { status, response } = await postsService.editPostById(newComment, id);
   res.status(status).json(response);
 };

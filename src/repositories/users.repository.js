@@ -1,6 +1,6 @@
 import { db } from "../database/connect.js";
 
-const getUserById = (id) => {
+const getUserById = (id, userId) => {
   return db.query(`
   SELECT
     u.id,u.name,u.profile_picture AS "image",
@@ -15,6 +15,7 @@ const getUserById = (id) => {
         'image',p.image,
         'hashtags',(COALESCE(h.hashtag,'[]')),
         'likes',l.*
+        'following',EXISTS(SELECT * FROM follows WHERE follower_id = $2 and following_id = u.id)
       )
     ) AS posts
   FROM
@@ -36,7 +37,7 @@ const getUserById = (id) => {
     u.id=$1
   GROUP BY
     u.id,u.name,u.profile_picture
-  ;`, [id]);
+  ;`, [id, userId]);
 };
 
 const getUsersBySearch = (name, id) => {

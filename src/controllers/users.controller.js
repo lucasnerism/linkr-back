@@ -2,7 +2,8 @@ import usersService from "../services/users.service.js";
 
 const getUserById = async (req, res) => {
   const { id } = req.params;
-  const { status, response } = await usersService.getUserById(id);
+  const { userId } = res.locals;
+  const { status, response } = await usersService.getUserById(id, userId);
   res.status(status).json(response);
 };
 
