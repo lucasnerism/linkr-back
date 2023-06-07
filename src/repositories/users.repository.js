@@ -1,9 +1,9 @@
 import { db } from "../database/connect.js";
 
-const getUserById = (id) => {
+const getUserById = (id, userId) => {
   return db.query(`
   SELECT
-    u.id,u.name,u.profile_picture AS "image",
+    u.id,u.name,u.profile_picture AS "image", EXISTS(SELECT * FROM follows WHERE follower_id = $2 and following_id = u.id) AS following,
     JSON_AGG(
       JSON_BUILD_OBJECT(
         'id',p.id,
@@ -14,7 +14,7 @@ const getUserById = (id) => {
         'description',p.description,
         'image',p.image,
         'hashtags',(COALESCE(h.hashtag,'[]')),
-        'likes',l.*
+        'likes',l.*        
       )
     ) AS posts
   FROM
@@ -36,19 +36,21 @@ const getUserById = (id) => {
     u.id=$1
   GROUP BY
     u.id,u.name,u.profile_picture
-  ;`, [id]);
+  ;`, [id, userId]);
 };
 
-const getUsersBySearch = (name) => {
+const getUsersBySearch = (name, id) => {
   const pattern = `%${name}%`;
   return db.query(`
   SELECT
-        u.id,u.name,u.profile_picture AS "image"
+    u.id,u.name,u.profile_picture AS "image", EXISTS(SELECT * FROM follows WHERE follower_id = $2 and following_id = u.id) AS following
   FROM
-      users u
+    users u
   WHERE
-      u.name ILIKE $1
-  `, [pattern]);
+    u.name ILIKE $1
+  ORDER BY
+    following DESC;
+  `, [pattern, id]);
 };
 
 const getFollow = (body) => {
@@ -74,8 +76,8 @@ const createFollow = (body) => {
         (following_id, follower_id) 
       VALUES 
         ($1, $2)
-    `, [body.following_id, body.follower_id])
-}
+    `, [body.following_id, body.follower_id]);
+};
 
 export default {
   getUserById,

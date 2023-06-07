@@ -24,9 +24,9 @@ const createPost = async (body) => {
   }
 };
 
-const getPosts = async () => {
+const getPosts = async (id) => {
   try {
-    const result = await postsRepository.getPosts();
+    const result = await postsRepository.getPosts(id);
     return { status: 200, response: result.rows };
   } catch (error) {
     return { status: 500, response: { message: error.message } };
