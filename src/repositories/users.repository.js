@@ -3,7 +3,7 @@ import { db } from "../database/connect.js";
 const getUserById = (id, userId) => {
   return db.query(`
   SELECT
-    u.id,u.name,u.profile_picture AS "image",
+    u.id,u.name,u.profile_picture AS "image", EXISTS(SELECT * FROM follows WHERE follower_id = $2 and following_id = u.id) AS following,
     JSON_AGG(
       JSON_BUILD_OBJECT(
         'id',p.id,
@@ -14,8 +14,7 @@ const getUserById = (id, userId) => {
         'description',p.description,
         'image',p.image,
         'hashtags',(COALESCE(h.hashtag,'[]')),
-        'likes',l.*,
-        'following',EXISTS(SELECT * FROM follows WHERE follower_id = $2 and following_id = u.id)
+        'likes',l.*        
       )
     ) AS posts
   FROM
