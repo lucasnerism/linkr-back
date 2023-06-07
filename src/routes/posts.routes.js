@@ -16,4 +16,6 @@ postsRouter.post('/post/:id/dislike', validateToken, postsController.dislikePost
 postsRouter.delete('/posts/:id', validateToken, postsController.deletePostById);
 postsRouter.put('/posts/:id', validateToken, postsController.editPostById);
 
+
 export default postsRouter;
+
