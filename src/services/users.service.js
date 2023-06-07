@@ -38,9 +38,18 @@ const createFollow = async (body) => {
   }
 };
 
+const deleteFollow = async (body) => {
+  try {
+    const result = await usersRepository.deleteFollow(body);
+    return { status: 200, response: result.rows };
+  } catch (error) {
+    return { status: 500, response: { message: error.message } };
+  }
+};
 
 export default {
   getUserById,
   searchUsers,
-  getFollow
+  createFollow,
+  deleteFollow
 };
