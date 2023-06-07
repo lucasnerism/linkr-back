@@ -13,8 +13,8 @@ postsRouter.get('/hashtag', validateToken, postsController.getTrendingHashtags);
 postsRouter.get('/hashtag/:hashtag', validateToken, postsController.getPostsByHashtag);
 postsRouter.post('/post/:id/like', validateToken, postsController.likePost);
 postsRouter.post('/post/:id/dislike', validateToken, postsController.dislikePost);
-postsRouter.delete('/posts/:id', postsController.deletePostById);
-postsRouter.put('/posts/:id', postsController.editPostById);
+postsRouter.delete('/posts/:id', validateToken, postsController.deletePostById);
+postsRouter.put('/posts/:id', validateToken, postsController.editPostById);
 
 
 export default postsRouter;

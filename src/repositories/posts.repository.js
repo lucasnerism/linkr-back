@@ -10,6 +10,39 @@ const createPost = ({ user_id, link, comment, title, description, image }) => {
   `, [user_id, link, comment, title, description, image]);
 };
 
+const getPostById = (id) => {
+  return db.query(`
+  SELECT
+    p.id,
+    p.user_id AS "userId",
+    u.name AS "userName",
+    u.profile_picture AS "userImage",
+    p.comment,
+    p.link,
+    p.title,
+    p.description,
+    p.image,
+    COALESCE(h.hashtag,'[]') AS "hashtags",
+    JSON_BUILD_OBJECT('total',l.total,'users',l.users) AS likes
+  FROM
+    posts p
+  JOIN
+    users u ON p.user_id=u.id
+  CROSS JOIN LATERAL(
+    SELECT JSON_AGG(h.name) AS hashtag
+    FROM hashtags h
+    WHERE post_id = p.id
+  ) h
+  CROSS JOIN LATERAL(
+    SELECT COALESCE(COUNT(l.id),0) AS "total", COALESCE(JSON_AGG(JSON_BUILD_OBJECT('id',u.id,'name',u.name)),'[]') AS "users"
+    FROM likes l
+    JOIN users u ON l.user_id = u.id
+    WHERE post_id=p.id
+  ) l
+  WHERE p.id=$1
+  ;`, [id]);
+};
+
 const getPosts = () => {
   return db.query(`
   SELECT
@@ -41,6 +74,7 @@ const getPosts = () => {
   ) l
   ORDER BY
     id DESC
+  LIMIT 20
   ;`);
 };
 
@@ -84,6 +118,7 @@ const getPostsByHashtag = (tag) => {
     )
   ORDER BY
     id DESC
+  LIMIT 20
   ;`, [tag]);
 };
 
@@ -101,6 +136,7 @@ const editPostById = (newComment, id) => {
 
 export default {
   createPost,
+  getPostById,
   getPosts,
   getPostsByHashtag,
   deletePostById,
