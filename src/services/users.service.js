@@ -19,7 +19,28 @@ const searchUsers = async (name) => {
     return { status: 500, response: { message: error.message } };
   }
 };
+
+const getFollow = async (body) => {
+  try {
+    const result = await usersRepository.getFollow(body);
+    return { status: 200, response: result.rows };
+  } catch (error) {
+    return { status: 500, response: { message: error.message } };
+  }
+};
+
+const createFollow = async (body) => {
+  try {
+    const result = await usersRepository.createFollow(body);
+    return { status: 200, response: result.rows };
+  } catch (error) {
+    return { status: 500, response: { message: error.message } };
+  }
+};
+
+
 export default {
   getUserById,
-  searchUsers
+  searchUsers,
+  getFollow
 };

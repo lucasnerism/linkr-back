@@ -19,6 +19,7 @@ export async function signUp(req, res) {
     }
 };
 
+
 export async function signIn(req, res) {
     const { email, password } = req.body;
 
@@ -32,7 +33,8 @@ export async function signIn(req, res) {
 
         const token = uuid();
         await db.query(`INSERT INTO sessions (user_id, token) VALUES ($1, $2);`, [user.id, token]);
-        await db.query(`INSERT INTO users (email, password, name, profile_picture) VALUES ($1, $2, $3, $4);`, [email, hashPassword, username, profile_picture]);
+        res.status(200).send({ id: user.id, token: token, profile_picture: user.profile_picture });
+
     } catch (err) {
         res.status(500).send(err.message);
     }
