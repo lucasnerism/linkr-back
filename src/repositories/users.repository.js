@@ -14,7 +14,7 @@ const getUserById = (id, userId) => {
         'description',p.description,
         'image',p.image,
         'hashtags',(COALESCE(h.hashtag,'[]')),
-        'likes',l.*
+        'likes',l.*,
         'following',EXISTS(SELECT * FROM follows WHERE follower_id = $2 and following_id = u.id)
       )
     ) AS posts
@@ -77,8 +77,8 @@ const createFollow = (body) => {
         (following_id, follower_id) 
       VALUES 
         ($1, $2)
-    `, [body.following_id, body.follower_id])
-}
+    `, [body.following_id, body.follower_id]);
+};
 
 export default {
   getUserById,
