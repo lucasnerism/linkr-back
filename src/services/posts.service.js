@@ -1,6 +1,7 @@
 import hashtagsRepository from "../repositories/hashtags.repository.js";
 import likesRepository from "../repositories/likes.repository.js";
 import postsRepository from "../repositories/posts.repository.js";
+import commentsRepository from "../repositories/comments.repository.js";
 import urlMetadata from "url-metadata";
 
 const createPost = async (body) => {
@@ -42,7 +43,6 @@ const getPostsByHashtag = async (tag) => {
   }
 };
 
-
 const editPostById = async (newComment, id) => {
   try {
     const result = await postsRepository.editPostById(newComment, id);
@@ -62,7 +62,6 @@ const likePost = async (user_id, post_id) => {
     return { status: 500, response: { message: error.message } };
   }
 };
-
 
 const deletePostById = async (id) => {
   try {
@@ -86,7 +85,6 @@ const dislikePost = async (user_id, post_id) => {
   }
 };
 
-
 const getTrendingHashtags = async () => {
   try {
     const result = await hashtagsRepository.getTrendingHashtags();
@@ -94,6 +92,26 @@ const getTrendingHashtags = async () => {
   } catch (error) {
     return { status: 500, response: { message: error.message } };
   }
+};
+
+const createComment = async (comment, user_id, post_id) => {
+  try{
+    await commentsRepository.createComment(comment, user_id, post_id);
+    const result = await commentsRepository.getPostComments(post_id);
+    return { status: 200, response: result.rows };
+
+  } catch (error) {
+    return { status: 500, response: { message: error.message } };
+  };
+};
+
+const getPostComments = async (post_id) => {
+  try {
+    const result = await commentsRepository.getPostComments(post_id);
+    return { status: 200, response: result.rows };
+  } catch (error) {
+    return { status: 500, response: { message: error.message } };
+  };
 };
 
 
@@ -105,5 +123,7 @@ export default {
   deletePostById,
   likePost,
   dislikePost,
-  getTrendingHashtags
+  getTrendingHashtags,
+  createComment,
+  getPostComments
 };
