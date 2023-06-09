@@ -105,9 +105,9 @@ const createComment = async (comment, user_id, post_id) => {
   };
 };
 
-const getPostComments = async (post_id) => {
+const getPostComments = async (user_id, post_id) => {
   try {
-    const result = await commentsRepository.getPostComments(post_id);
+    const result = await commentsRepository.getPostComments(user_id, post_id);
     return { status: 200, response: result.rows };
   } catch (error) {
     return { status: 500, response: { message: error.message } };

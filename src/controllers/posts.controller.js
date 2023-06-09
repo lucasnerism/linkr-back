@@ -60,7 +60,8 @@ const createComment = async (req, res) => {
 
 const getPostComments = async (req, res) => {
   const { id: post_id } = req.params;
-  const { status, response } = await postsService.getPostComments(post_id);
+  const { userId } = res.locals;
+  const { status, response } = await postsService.getPostComments(userId, post_id);
   res.status(status).json(response);
 };
 
