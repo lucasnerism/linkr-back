@@ -122,6 +122,8 @@ const getPosts = (id, offset) => {
         AND
           following_id = u.id
       )
+  OR
+    p.user_id = $1
   UNION
   SELECT
     p.id,
@@ -166,7 +168,9 @@ const getPosts = (id, offset) => {
           follower_id = $1
         AND
           following_id = rp.user_id
-      )  
+      )
+  OR
+    rp.user_id = $1
   ORDER BY
     created_at DESC
   LIMIT 10
