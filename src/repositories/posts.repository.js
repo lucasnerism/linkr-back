@@ -78,7 +78,7 @@ const getPostById = (id) => {
   ;`, [id]);
 };
 
-const getPosts = (id) => {
+const getPosts = (id, offset) => {
   return db.query(`
   SELECT
     p.id,
@@ -169,11 +169,12 @@ const getPosts = (id) => {
       )  
   ORDER BY
     created_at DESC
-  LIMIT 20
-  ;`, [id]);
+  LIMIT 10
+  OFFSET $2
+  ;`, [id, offset]);
 };
 
-const getPostsByHashtag = (tag) => {
+const getPostsByHashtag = (tag, offset) => {
   return db.query(`
   SELECT
     p.id,
@@ -213,8 +214,9 @@ const getPostsByHashtag = (tag) => {
       )
   ORDER BY
     id DESC
-  LIMIT 20
-  ;`, [tag]);
+  LIMIT 10
+  OFFSET $2
+  ;`, [tag, offset]);
 };
 
 const deletePostById = (id) => {

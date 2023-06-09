@@ -25,18 +25,18 @@ const createPost = async (body) => {
   }
 };
 
-const getPosts = async (id) => {
+const getPosts = async (id, offset) => {
   try {
-    const result = await postsRepository.getPosts(id);
+    const result = await postsRepository.getPosts(id, offset);
     return { status: 200, response: result.rows };
   } catch (error) {
     return { status: 500, response: { message: error.message } };
   }
 };
 
-const getPostsByHashtag = async (tag) => {
+const getPostsByHashtag = async (tag, offset) => {
   try {
-    const result = await postsRepository.getPostsByHashtag(tag);
+    const result = await postsRepository.getPostsByHashtag(tag, offset);
     return { status: 200, response: result.rows };
   } catch (error) {
     return { status: 500, response: { message: error.message } };
@@ -95,7 +95,7 @@ const getTrendingHashtags = async () => {
 };
 
 const createComment = async (comment, user_id, post_id) => {
-  try{
+  try {
     await commentsRepository.createComment(comment, user_id, post_id);
     const result = await commentsRepository.getPostComments(post_id);
     return { status: 200, response: result.rows };
