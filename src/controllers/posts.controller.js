@@ -24,7 +24,6 @@ const deletePostById = async (req, res) => {
   res.status(status).json(response);
 };
 
-
 const editPostById = async (req, res) => {
   const { id } = req.params;
   const { newComment } = req.body;
@@ -51,6 +50,20 @@ const getTrendingHashtags = async (req, res) => {
   res.status(status).json(response);
 };
 
+const createComment = async (req, res) => {
+  const { id: post_id } = req.params;
+  const { userId } = res.locals;
+  const {comment} = req.body;
+  const {status, response} = await postsService.createComment(comment, userId, post_id);
+  res.status(status).json(response);
+};
+
+const getPostComments = async (req, res) => {
+  const { id: post_id } = req.params;
+  const { status, response } = await postsService.getPostComments(post_id);
+  res.status(status).json(response);
+};
+
 export default {
   createPost,
   getPosts,
@@ -59,5 +72,7 @@ export default {
   deletePostById,
   likePost,
   dislikePost,
-  getTrendingHashtags
+  getTrendingHashtags,
+  createComment,
+  getPostComments
 };
