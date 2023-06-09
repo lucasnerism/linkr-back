@@ -1,6 +1,6 @@
 import { db } from "../database/connect.js";
 
-const getUserById = (id, userId) => {
+const getUserById = (id, userId, offset) => {
   return db.query(`
   SELECT
     u.id,u.name,u.profile_picture AS "image", EXISTS(SELECT * FROM follows WHERE follower_id = $2 and following_id = $1) AS following,
@@ -80,7 +80,9 @@ const getUserById = (id, userId) => {
     u.id=$1  
   GROUP BY
     u.id,u.name,u.profile_picture
-  ;`, [id, userId]);
+  LIMIT 10
+  OFFSET $3
+  ;`, [id, userId, offset]);
 };
 
 const getUsersBySearch = (name, id) => {
@@ -113,8 +115,8 @@ const deleteFollow = (body) => {
       follows 
     WHERE 
       following_id=$1 AND follower_id=$2   
-    `, [body.following_id, body.follower_id])
-}
+    `, [body.following_id, body.follower_id]);
+};
 
 export default {
   getUserById,

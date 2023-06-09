@@ -8,7 +8,8 @@ const createPost = async (req, res) => {
 
 const getPosts = async (req, res) => {
   const { userId } = res.locals;
-  const { status, response } = await postsService.getPosts(userId);
+  const { offset } = req.query;
+  const { status, response } = await postsService.getPosts(userId, offset);
   res.status(status).json(response);
 };
 
@@ -53,8 +54,8 @@ const getTrendingHashtags = async (req, res) => {
 const createComment = async (req, res) => {
   const { id: post_id } = req.params;
   const { userId } = res.locals;
-  const {comment} = req.body;
-  const {status, response} = await postsService.createComment(comment, userId, post_id);
+  const { comment } = req.body;
+  const { status, response } = await postsService.createComment(comment, userId, post_id);
   res.status(status).json(response);
 };
 
